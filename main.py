@@ -1,10 +1,12 @@
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from PIL import Image 
 import pytesseract
+import re
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
-img = cv2.imread('images/im2.jpg')
+img = cv2.imread('images/im3.jpg')
 
 # get grayscale image
 def get_grayscale(image):
@@ -55,13 +57,24 @@ def canny(image):
 #     rotated = cv2.warpAffine(image, M, (w, h), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE)
 #     return rotated
 
+# def rotate(image, center = None, scale = 1.0):
+#     angle=360-int(re.search('(?<=Rotate: )\d+', pytesseract.image_to_osd(image)).group(0))
+#     (h, w) = image.shape[:2]
+
+#     if center is None:
+#         center = (w / 2, h / 2)
+
+#     # Perform the rotation
+#     M = cv2.getRotationMatrix2D(center, angle, scale)
+#     rotated = cv2.warpAffine(image, M, (w, h))
+
+#     return rotated
+
 #template matching
 def match_template(image, template):
     return cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED) 
 
-
-
-image = cv2.imread('aurebesh.jpg')
+# img = rotate(img)
 
 gray = get_grayscale(img)
 thresh = thresholding(gray)
@@ -70,6 +83,7 @@ canny = canny(gray)
 median = remove_noise(img)
 erode = erode(img)
 close = closure(img)
+
 
 # thg = get_grayscale(thresh)
 # thgo = opening(thg)
@@ -80,5 +94,7 @@ custom_config = r'--oem 3 --psm 6'
 print(pytesseract.image_to_string(thresh, config=custom_config))
 
 
-plt.imshow(gray)
-plt.show()
+
+cv2.imshow("tresh",thresh)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
